@@ -26,7 +26,7 @@ Feel free to modify the start_experiment.sh script to add or remove any function
 
 ## Setup
 
-### 1. Clone the repository
+### Clone the repository
 
 Clone this repository outside of your ROS2 workspace:
 
@@ -34,7 +34,7 @@ Clone this repository outside of your ROS2 workspace:
 git clone https://github.com/NaCl-Salt-12/ROS2-Experiment-Pipeline.git
 ```
 
-### 2. Unpack Files
+### Unpack Files
 
 Run the unpacking script to copy the necessary files into your ROS2 workspace:
 
@@ -42,11 +42,11 @@ Run the unpacking script to copy the necessary files into your ROS2 workspace:
 unpack.sh <path_to_your_ros2_workspace>
 ```
 
-### 3. Modify your launch file
+### Modify your launch file
 
 Add your launch code to the example launch file provided in the repository. Do not reorder the nodes or remove anything other than the example nodes.
 
-### 4. Modify get_experiment_name.py (Optional)
+### Modify get_experiment_name.py (Optional)
 
 The get_experiment_name.py script captures and validates experiment names. You can modify this script to:
 
