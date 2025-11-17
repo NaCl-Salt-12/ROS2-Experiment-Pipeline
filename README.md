@@ -1,15 +1,20 @@
-# Using ros2experiment_pipeline
+# Using ROS2-Experiment-Pipeline
 
-This is a pipeline for recording Ros2 experiments. It allows you to set a experiment name, that matches naming conventions and automatically launches your launch file and records all topics converts them to CSV files and uploads them to GitHub.
-This is the process it follows:
+This pipeline automates the recording/logging of experiments using the ROS2 framework. It handles experiment naming conventions, launches your configuration, records topics, converts data to CSV format, and uploads results to GitHub.
 
-- Runs a python script that captures the experiment name and ensures it matches naming conventions.
-- the launch file is launched with the experiment name as an argument.
-- the topic data is recorded using Ros2 bag
-- the Ros2 bag files are converted to CSV files
-- the files are then moved to a local git repository and committed and pushed to GitHub.
+### Process Overview
 
-Running the script, once setup is complete all you need to do to run is execute the start_experiment.sh script:
+The pipeline executes the following steps:
+
+1. Captures and validates the experiment name against naming conventions
+2. Launches the specified launch file with the experiment name as an argument
+3. Records topic data using ROS2 bag
+4. Converts ROS2 bag files to CSV format
+5. Moves files to a local Git repository, commits, and pushes to GitHub
+
+### Running the script
+
+Once setup is complete, execute the experiment script:
 
 ```bash
 bash start_experiment.sh
@@ -21,32 +26,41 @@ Feel free to modify the start_experiment.sh script to add or remove any function
 
 ## Setup
 
-Clone this repository to your local machine, but not into your ros2 workspace:
+### 1. Clone the repository
+
+Clone this repository outside of your ROS2 workspace:
 
 ```bash
-git clone https://github.com/NaCl-Salt-12/walfulls_ctrl.git
+git clone https://github.com/NaCl-Salt-12/ROS2-Experiment-Pipeline.git
 ```
 
-Then run the unpacking script to copy the necessary files into your ros2 workspace:
+### 2. Unpack Files
+
+Run the unpacking script to copy the necessary files into your ROS2 workspace:
 
 ```bash
 unpack.sh <path_to_your_ros2_workspace>
 ```
 
-### Modify your launch file
+### 3. Modify your launch file
 
-Add your launch code the example launch file provided in the repo. Do not reorder the nodes and do not remove anything other than the example nodes.
+Add your launch code to the example launch file provided in the repository. Do not reorder the nodes or remove anything other than the example nodes.
 
-### Modify the get_experiment_name.py (if desired)
+### 4. Modify get_experiment_name.py (Optional)
 
-The get_experiment_name.py script is used to capture the experiment name and ensure it matches naming conventions. You can modify this script to change the naming conventions or add additional functionality. Or change the location where the experiment history is stored.
-Overall I do not recommend changing this script unless you have a specific need.
+The get_experiment_name.py script captures and validates experiment names. You can modify this script to:
+
+- Change naming conventions
+- Add additional functionality
+- Modify the experiment history storage location
+
+Modifying this script is not recommended unless you have a specific requirement.
 
 ### Setup your git repository
 
 #### Create a git repository
 
-create a local git repository where your experiment data will be stored. This can be done using the following commands:
+Create a local Git repository for storing experiment data:
 
 ```bash
 git iniit
@@ -55,7 +69,7 @@ git commit -m "Initial commit"
 git remote add origin <your_git_repository_url>
 ```
 
-Or you can clone a your new repository made in GitHub:
+Alternatively, clone an existing repository from GitHub:
 
 ```bash
 git clone <your_git_repository_url>
@@ -63,26 +77,30 @@ git clone <your_git_repository_url>
 
 #### Create a deploy key
 
-You will need to create a ssh key to allow the pipeline to push data to your git repository. Follow the steps provided [on github](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys#deploy-keys) to set up your deploy key.
+Generate an SSH key to enable the pipeline to push data to your Git repository. Follow the [GitHub documentation on deploy keys](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys#deploy-keys) for setup instructions.
 
-#### Configure the start_experiment script
+### Configure the start_experiment Script
 
-At the top of the start-experiment script, you will find the following variables that need to be set:
+Set the following variables at the top of the `start_experiment.sh` script:
 
-- `DEPLOY_KEY_PATH`: The path to your deploy key. (i.e. /home/user/.ssh/id_rsa)
-- `STAGE_PATH`: The path to a temporary staging directory where the experiment data will be stored before being moved to the git repository. (i.e. ${HOME}/bag_data) also used for local backups of ros2 bags.
-- `GIT_PATH`: The path to your local git repository where the experiment data will be stored. (i.e. /home/user/experiment_logs)
-- `SSH_URL`: The Git SSH URL of your git repository. (i.e. `git@github.com:USERNAME/REPOSITORY_NAME.git`) you can find this at the main page of the repository on GitHub, click on the green "Code" button and select "SSH" and copy the URL.
+- `DEPLOY_KEY_PATH`: Path to your deploy key. (e.g., `/home/user/.ssh/id_rsa`)
+- `STAGE_PATH`: Path to a temporary staging directory for experiment data before moving to the Git repository (e.g.,`${HOME}/bag_data`). Also used for local backups of ROS2 bags
+- `GIT_PATH`: Path to your local Git repository for experiment data storage (e.g., `/home/user/experiment_logs`)
+- `SSH_URL`: Git SSH URL of your git repository. (e.g., `git@github.com:USERNAME/REPOSITORY_NAME.git`) Find this on your repository's main page by clicking the green "Code" button and selecting "SSH"
 
-> [!NOTE]
-> `{$HOME}` is a reference to your home directory, the same as `~`. You can use this variable in the paths above to make them relative to your home directory.
+  > [!NOTE]
+  > `{$HOME}` references your home directory (equivalent to ~) and should be used in the paths above to make them relative to your home directory.
 
 ## FAQ
 
 ### **Q: Why have a staging directory?**
 
-**A**: For two reasons: Backups and atomic commits. The staging directory is used to store the experiment data temporarily before being moved to the git repository. This allows for a backup of the ros2 bag files in case something goes wrong during the conversion to CSV or the git commit process. It also allows for atomic commits, meaning that all files are committed at once, rather than one at a time. This ensures that the experiment data is consistent and complete.
+**A**: The staging directory serves two purposes: backups and atomic commits. It temporarily stores experiment data before moving it to the Git repository, providing a backup of ROS2 bag files in case of conversion or commit failures. It also enables atomic commits, ensuring all files are committed simultaneously for consistent and complete experiment data.
 
-### Q: Why do not clone the repository into my ros2 workspace?
+### Q: Why do not clone the repository into my ROS2 workspace?
 
-**A:** Because it allows for user customization of the pipeline without modifying the original repository. As well as allowing easer integration into existing ros2 workspaces, and git repositories. And allows use in multiple ros2 workspaces without duplicating the repository.
+**A**: Keeping the repository separate from your ROS2 workspace provides several benefits:
+
+- Enables pipeline customization without modifying the original repository
+- Simplifies integration into existing ROS2 workspaces and Git repositories
+- Allows usage across multiple ROS2 workspaces without repository duplication
