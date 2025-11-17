@@ -83,13 +83,13 @@ Generate an SSH key to enable the pipeline to push data to your Git repository. 
 
 Set the following variables at the top of the `start_experiment.sh` script:
 
-- `DEPLOY_KEY_PATH`: Path to your deploy key. (e.g., `/home/user/.ssh/id_rsa`)
+- `DEPLOY_KEY_PATH`: Path to your deploy key. (e.g., `${HOME}/.ssh/id_rsa`)
 - `STAGE_PATH`: Path to a temporary staging directory for experiment data before moving to the Git repository (e.g.,`${HOME}/bag_data`). Also used for local backups of ROS2 bags
-- `GIT_PATH`: Path to your local Git repository for experiment data storage (e.g., `/home/user/experiment_logs`)
+- `GIT_PATH`: Path to your local Git repository for experiment data storage (e.g., `${HOME}/experiment_logs`)
 - `SSH_URL`: Git SSH URL of your git repository. (e.g., `git@github.com:USERNAME/REPOSITORY_NAME.git`) Find this on your repository's main page by clicking the green "Code" button and selecting "SSH"
 
-  > [!NOTE]
-  > `{$HOME}` references your home directory (equivalent to ~) and should be used in the paths above to make them relative to your home directory.
+> [!NOTE]
+> `{$HOME}` references your home directory (equivalent to ~) and should be used in the paths above to make them relative to your home directory.
 
 ## FAQ
 
