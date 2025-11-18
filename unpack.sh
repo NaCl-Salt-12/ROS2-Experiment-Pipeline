@@ -12,7 +12,7 @@ else
 	echo "Found directory: $1"
 fi
 
-if find "$1" -type f -name "$setup.bash" -print -quit | grep -q .; then
+if find "$1" -type f -name "setup.bash" -print -quit | grep -q .; then
 	echo "Ros2 workspace detected at: $1"
 else
 	echo "Ros2 workspace not found at: $1"
