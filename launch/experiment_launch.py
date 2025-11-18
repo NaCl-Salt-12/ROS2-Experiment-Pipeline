@@ -16,15 +16,8 @@ def generate_launch_description():
     # Get the experiment name
     save_location = LaunchConfiguration("save_location")
 
-    example_node = Node(
-        package="",
-        executable="",
-        name="",
-        namespace="",
-        parameters=[{}],
-    )
     """
-    Put your launch code and nodes here.
+    Put your nodes here.
     """
 
     record_all_topics = [
@@ -48,8 +41,8 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            save_location_arg,  # Add the argument declaration first
+            save_location_arg,
             ros_bagger,
-            example_node,
+            # Put you node names here
         ]
     )
