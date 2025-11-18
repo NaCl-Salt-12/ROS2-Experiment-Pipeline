@@ -15,11 +15,6 @@ def generate_launch_description():
 
     # Get the experiment name
     save_location = LaunchConfiguration("save_location")
-
-    """
-    Put your nodes here.
-    """
-
     record_all_topics = [
         "ros2",
         "bag",
@@ -38,6 +33,10 @@ def generate_launch_description():
         output="screen",
         emulate_tty=False,
     )
+
+    """
+    Put your nodes here.
+    """
 
     return LaunchDescription(
         [
