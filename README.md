@@ -42,6 +42,8 @@ Run the unpacking script to copy the necessary files into your ROS2 workspace:
 unpack.sh <path_to_your_ros2_workspace>
 ```
 
+The unpack script has a number of optional arguments, type `./unpack.sh -h` to see all options.
+
 ### Modify your experiment_launch file
 
 Add your launch code to the example launch file provided in the repository. Do not reorder the nodes or remove anything other than the example nodes.

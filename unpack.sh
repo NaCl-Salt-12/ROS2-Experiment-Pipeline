@@ -1,5 +1,43 @@
 #!/bin/bash
 
+skip_environment_setup=false
+skip_launch_file=false
+skip_scripts=false
+skip_start_script=false
+
+while [[ $# -gt 0 ]]; do
+	case $1 in
+	--skip-env-setup)
+		skip_environment_setup=true
+		shift
+		;;
+	--skip-launch)
+		skip_launch_file=true shift
+		;;
+	--skip-scripts)
+		skip_scripts=true
+		shift
+		;;
+	--skip-start-script)
+		skip_start_script=true
+		shift
+		;;
+	-h | --help)
+		echo "Usage: $0 [--skip-env-setup] <path_to_your_ros2_workspace>"
+		echo ""
+		echo "Options:"
+		echo "  --skip-env-setup    Skip the Python environment setup step."
+		echo "  --skip-launch       Skip copying launch files."
+		echo "  --skip-scripts      Skip copying scripts."
+		echo "  --skip-start-script Skip copying start_experiment.sh."
+		exit 0
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
 if [ "$#" -ne 1 ]; then
 	echo "Usage: $0 <path_to_your_ros2_workspace>"
 	exit 1
@@ -39,55 +77,87 @@ else
 	done
 fi
 
-echo "Copying scripts to ros2 workspace..."
-
-mkdir -p "$1/scripts"
-
-for file in ./scripts/*; do
-	if [ -f "$file" ]; then
-		filename=$(basename "$file")
-
-		if cp "$file" "$1/scripts/"; then
-			echo "**$filename** copied successfully"
-		else
-			echo "ERROR: Failed to copy **$filename**"
-			exit 1
-		fi
-	fi
-done
-
-echo "Successfully copied all scripts."
-
-if [ -d "$1"/launch ]; then
-	echo "Launch directory already exists in the workspace."
+if [[ "$skip_scripts" == "true" ]]; then
+	echo "Skipping copying scripts as per user request."
 else
-	mkdir -p "$1/launch"
-	echo "Created launch directory in the workspace."
+
+	echo "Copying scripts to ros2 workspace..."
+
+	mkdir -p "$1/scripts"
+
+	for file in ./scripts/*; do
+		if [ -f "$file" ]; then
+			filename=$(basename "$file")
+
+			if cp "$file" "$1/scripts/"; then
+				echo "**$filename** copied successfully"
+			else
+				echo "ERROR: Failed to copy **$filename**"
+				exit 1
+			fi
+		fi
+	done
+
+	echo "Successfully copied all scripts."
 fi
 
-for file in ./launch/*; do
-	if [ -f "$file" ]; then
-		filename=$(basename "$file")
-
-		if cp "$file" "$1/launch/"; then
-			echo "**$filename** copied successfully"
-		else
-			echo "ERROR: Failed to copy **$filename**"
-			exit 1
-		fi
-	fi
-done
-
-echo "Successfully copied all launch files."
-
-if cp ./start_experiment.sh "$1/"; then
-	echo "start_experiment.sh copied successfully"
+if [[ "$skip_launch_file" == "true" ]]; then
+	echo "Skipping copying launch files as per user request."
 else
-	echo "ERROR: Failed to copy start_experiment.sh"
-	exit 1
+	echo "Copying launch files to ros2 workspace..."
+	if [ -d "$1"/launch ]; then
+		echo "Launch directory already exists in the workspace."
+	else
+		mkdir -p "$1/launch"
+		echo "Created launch directory in the workspace."
+	fi
+	for file in ./launch/*; do
+		if [ -f "$file" ]; then
+			filename=$(basename "$file")
+
+			if cp "$file" "$1/launch/"; then
+				echo "**$filename** copied successfully"
+			else
+				echo "ERROR: Failed to copy **$filename**"
+				exit 1
+			fi
+		fi
+	done
+
+	echo "Successfully copied all launch files."
+fi
+
+if [[ "$skip_start_script" == "true" ]]; then
+	echo "Skipping copying start_experiment.sh as per user request."
+else
+	echo "Copying start_experiment.sh to ros2 workspace..."
+	if cp ./start_experiment.sh "$1/"; then
+		echo "start_experiment.sh copied successfully"
+	else
+		echo "ERROR: Failed to copy start_experiment.sh"
+		exit 1
+	fi
 fi
 
 echo "All files copied successfully to the ROS2 workspace at: $1"
+
+if [[ "$skip_environment_setup" == "true" ]]; then
+	echo "Skipping python environment setup as per user request."
+	chmod +x "$1/start_experiment.sh"
+	echo "Unpacking complete."
+	echo "To finish setup please follow the instructions outlined in the README.md file."
+	exit 0
+fi
+
+echo "Setting up python environment..."
+
+python3 -m venv "$1/scripts/script_env"
+
+source "$1/scripts/script_env/bin/activate"
+
+pip install --upgrade pip
+
+pip install requirements.txt
 
 chmod +x "$1/start_experiment.sh"
 
