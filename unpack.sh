@@ -12,7 +12,8 @@ while [[ $# -gt 0 ]]; do
 		shift
 		;;
 	--skip-launch)
-		skip_launch_file=true shift
+		skip_launch_file=true
+		shift
 		;;
 	--skip-scripts)
 		skip_scripts=true
